@@ -1964,12 +1964,14 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	genFailDescription: literal [
-		| pkParseFail message |
+		| pkParseFail messageAlloc messageInit  |
 		pkParseFail := LKSymbolRef referenceWithSymbol: 'PKParseFail'.
-		message := LKMessageSend messageWithSelectorName: 'initWithInput:description:'
+		messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
+		messageAlloc setTarget: pkParseFail.
+		messageInit := LKMessageSend messageWithSelectorName: 'initWithInput:description:'
 			arguments: {inputStreamDeclaration. literal}.
-		message setTarget: pkParseFail.
-		^message
+		messageInit setTarget: messageAlloc.
+		^messageInit
 	]
 
 	" Reference to the superclass ivar for the delegate "
@@ -2036,7 +2038,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		                                          arguments: { listHead }.
 		comparison setTarget: theLit.
 		^LKIfStatement ifStatementWithCondition: comparison
-		                                   then: { self getMatchOfLength: litLen }
+		                                   then: { self genMatchOfLength: litLen }
 		                                   else: {
 		  self getFailureWithDescription: ('Expected literal "', theLit description, '"') cause: nil }
 	]
@@ -2053,7 +2055,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		getHeadLength setTarget: getHead.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
 		                                   then: { self getFailureWithDescription: 'Unexpected end of stream' cause: nil }
-		                                   else: { self getMatchOfLength: getHeadLength }
+		                                   else: { self genMatchOfLength: getHeadLength }
 		
 	]
 
@@ -2068,11 +2070,13 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	makeSuperGrammar: ident [
-		^ LKSymbolRef referenceWithSymbol: ident.
+		^ ident.
 	]
 
 	makeGrammar: grammarName parent: parentName rules: methods [
 		| parentClassName newGrammar |
+
+		ETTranscript debug: 'List of methods '; debug: methods; debugCr.
 		parentClassName := (parentName = '') ifTrue: [ 'PKParser'] ifFalse: ['PK',parentName].
 	
 		newGrammar := LKSubclass subclassWithName: 'PK',grammarName
@@ -2137,7 +2141,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		comparison setTarget: charAtIndex.
 		^self ifAtEndThenFailElse: { 
 		  LKIfStatement ifStatementWithCondition: comparison
-		                                    then: { self getMatchOfLength: (LKNumberLiteral literalFromString: '1') }
+		                                    then: { self genMatchOfLength: (LKNumberLiteral literalFromString: '1') }
 		                                    else: {
 		    self getFailureWithDescription: ('Expected character from class [:', name, ':]') cause: nil }
 		  }
@@ -2164,7 +2168,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
                                                  arguments: { lteLast }.
 		predicate setTarget: gteFirst.
 		matchIf := LKIfStatement ifStatementWithCondition: predicate
-		  then: { self getMatchOfLength: (LKNumberLiteral literalFromString: '1') }
+		  then: { self genMatchOfLength: (LKNumberLiteral literalFromString: '1') }
 		  else: { self getFailureWithDescription: ('Expected character [', first, '-', last, ']') cause: nil }.
 		block := LKBlockExpr blockWithArguments: {} locals: { 'charValue' } statements: {charAssign . matchIf }.
 		blockInvoke := LKMessageSend messageWithSelectorName: 'value'.
@@ -2180,6 +2184,56 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			modifier value: exp ] .
 		
 		ETTranscript show: 'suffixExp ', suffixExp description; cr.
+	]
+
+	makeNullarySelector: sel [
+		^sel selValue
+	]
+
+	makeKeywordMessagePart: keyword argument: arg [
+		^NSDictionary dictionaryWithObjects: { keyword componentsJoinedByString: ''. arg }
+		                            forKeys: { 'selectorPart'. 'argumentName' }
+	]
+
+	makeSelectorAndArguments: components [
+		| selector args |
+		selector := ''.
+		args := NSMutableArray new.
+		(components isKindOfClass: NSArray class) ifFalse: [ components := { components } ].
+		components do: [ :each |
+			selector := selector, (each objectForKey: 'selectorPart').
+			args addObject: (each objectForKey: 'argumentName').
+		].
+		^ NSDictionary dictionaryWithObjects: { selector. args }
+		                             forKeys: { 'selector'. 'arguments' }
+	]
+
+	makeAction: invokation [
+		| pkParseAction messageAlloc messageInit arguments |
+		(invokation isKindOfClass: NSDictionary class) ifTrue: [
+			pkParseAction := LKSymbolRef referenceWithSymbol: 'PKParseAction'.
+			messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
+			messageAlloc setTarget: pkParseAction.
+
+			"Should be Fix with selValue message send"
+			messageInit := LKMessageSend messageWithSelectorName: 'initWithSelector:argumentNames:'
+					arguments: { LKLiteral literalFromString: ( invokation objectForKey: 'selector').
+								 LKLiteral literalFromString: ( invokation objectForKey: 'arguments') }.
+			messageInit setTarget: messageAlloc.
+			messageInit
+		] ifFalse: [
+			arguments := NSMutableArray new.
+			pkParseAction := LKSymbolRef referenceWithSymbol: 'PKParseAction'.
+			messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
+			messageAlloc setTarget: pkParseAction.
+			arguments addObject: (LKLiteral literalFromString: invokation).
+			arguments addObject: LKNilRef builtin.
+			messageInit := LKMessageSend messageWithSelectorName: 'initWithSelector:argumentNames:'
+					arguments: arguments.
+			messageInit setTarget: messageAlloc.
+			messageInit 
+		].
+		^messageInit
 	]
 
 	makeSequenceExpression: exp actionOrRestriction: action [
