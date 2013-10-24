@@ -100,5 +100,8 @@
 @interface PKUppercaseExpression : PKParseExpression
 @end
 
+@interface PKWhitespaceExpression : PKParseExpression
+@end
+
 @interface PKLowercaseExpression : PKParseExpression
 @end
