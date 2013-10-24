@@ -2089,14 +2089,41 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	makeAlternativeExpression: exp1 alternative: alts [
-		"To be implemented"
-		^exp1
+		| matchFirst test isBlock exp if testLoop match |
+		alts = '' ifTrue: [^exp1].
+		matchFirst := self genTemp.
+		methodStatements addObject: (LKAssignExpr assignWithTarget: matchFirst expr: exp1).
+		test := LKMessageSend messageWithSelectorName: 'isFailure'.
+		exp := LKIfStatement ifStatementWithCondition: test.
+		exp setElseStatements: { matchFirst }.
+		alts leftFoldWithInitialValue: exp intoBlock: [:acc :current | 
+			match := self genTemp.
+			testLoop := LKMessageSend messageWithSelectorName: 'isFailure'.
+			testLoop setTarget: match.
+			if := LKIfStatement ifStatementWithCondition: testLoop.
+			if setElseStatements: { match }.
+			"Then statemetns is override in the next iteration except for the last one."
+			if setThenStatements: { match }.
+			acc setThenStatements: { 
+				LKAssignExpr assignWithTarget: match expr: current.
+				if
+			}.
+			if
+		].
+		^exp
 	]
 
-	makeRule: ruleName expression: statements [
-		| message |
+	makeRule: ruleName expression: statement [
+		| message method |
+		"TODO: Need to add the methodStatements and locals vars. statements should be
+		 transformed into a return node"
 		message := LKMessageSend messageWithSelectorName:  ruleName.
-		^LKMethod methodWithSignature: message locals: {} statements: statements.
+		methodStatements addObject: (LKReturn returnWithExpr: statement).
+		method := LKMethod methodWithSignature: message locals: tempDecl statements: methodStatements.
+		tempDecl := NSMutableDictionary new.
+		methodStatements := NSMutableArray new.
+		currentTempsCount := 0.
+		^method
 	]
 
 	makeRuleLookup: ruleName [
