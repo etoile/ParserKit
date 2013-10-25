@@ -13,10 +13,10 @@
 @end
 
 @implementation PKRangeExpressionTest
-- (void)testRange
+- (void)testSpace
 {
 	PKInputStream *stream  = [[PKInputStream alloc] initWithStream: @"abcd"];
-	PKRangeExpression *exp = [[PKRangeExpression alloc] initFrom: @"a" toChar: @"c"];
+	PKRangeExpression *exp = [[PKRangeExpression alloc] initFrom: @"a" to: @"c"];
 	id result  = [exp parseInput: stream];
 	UKObjectKindOf(result, PKParseMatch);
 	UKTrue([[result isSuccess] boolValue]);

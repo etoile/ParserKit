@@ -106,7 +106,10 @@
 @interface PKRangeExpression : PKParseExpression
 {
 }
-- (id) initFrom: (id)fromChar toChar: (id)toChar;
+- (id) initFrom: (id)fromChar to: (id)toChar;
+@end
+
+@interface PKNumericExpression : PKParseExpression
 @end
 
 @interface PKLowercaseExpression : PKParseExpression

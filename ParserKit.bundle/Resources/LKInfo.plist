@@ -16,10 +16,12 @@
 		<string>Expressions/PKLowercaseExpression.st</string>
 		<string>Expressions/PKWhitespaceExpression.st</string>
 		<string>Expressions/PKRangeExpression.st</string>
+		<string>Expressions/PKNumericExpression.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
 		<string>PKLowercaseExpression</string>
+		<string>PKNumericExpression</string>
 		<string>PKRangeExpression</string>
 		<string>PKWhitespaceExpression</string>
 		<string>PKAlphabeticExpression</string>
