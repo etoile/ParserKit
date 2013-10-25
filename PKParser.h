@@ -103,5 +103,11 @@
 @interface PKWhitespaceExpression : PKParseExpression
 @end
 
+@interface PKRangeExpression : PKParseExpression
+{
+}
+- (id) initFrom: (id)fromChar toChar: (id)toChar;
+@end
+
 @interface PKLowercaseExpression : PKParseExpression
 @end
