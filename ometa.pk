@@ -1,90 +1,90 @@
 EtoileBase {
-# Lexical syntax #
-AND <- '&':expr Spacing -> expr
-CARET <- '^':expr Spacing -> expr
-COLON <- ':':expr Spacing -> expr
-DOLLAR <- '$':expr Spacing -> expr
-DOT <- '.':expr Spacing -> expr
-LEFTARROW <- '<-':expr Spacing -> expr
-NOT <- '!':expr Spacing -> expr
-PLUS <- '+':expr Spacing -> expr
-STAR <- '*':expr Spacing -> expr
-QUESTION <- '?':expr Spacing -> expr
-RIGHTARROW <- '->':expr Spacing -> expr
-OPEN <- '(':expr Spacing -> expr
-CLOSE <- ')':expr Spacing -> expr
-ACLOSE <- ']':expr Spacing -> expr
-AOPEN <- '[':expr Spacing -> expr
-COPEN <- '{':expr Spacing -> expr
-CCLOSE <- '}':expr Spacing -> expr
-SLASH <- '/' Spacing -> [orJunction]
-Comment <- '#' (!EndOfLine .)* EndOfLine
-EndOfLine <- '\r\n' / '\n'
-Space <- [[:space:]] / EndOfLine
-Spacing <- (Space / Comment)* -> [makeEmpty]
+	# Lexical syntax #
+	AND <- '&':expr Spacing -> expr
+	CARET <- '^':expr Spacing -> expr
+	COLON <- ':':expr Spacing -> expr
+	DOLLAR <- '$':expr Spacing -> expr
+	DOT <- '.':expr Spacing -> expr
+	LEFTARROW <- '<-':expr Spacing -> expr
+	NOT <- '!':expr Spacing -> expr
+	PLUS <- '+':expr Spacing -> expr
+	STAR <- '*':expr Spacing -> expr
+	QUESTION <- '?':expr Spacing -> expr
+	RIGHTARROW <- '->':expr Spacing -> expr
+	OPEN <- '(':expr Spacing -> expr
+	CLOSE <- ')':expr Spacing -> expr
+	ACLOSE <- ']':expr Spacing -> expr
+	AOPEN <- '[':expr Spacing -> expr
+	COPEN <- '{':expr Spacing -> expr
+	CCLOSE <- '}':expr Spacing -> expr
+	SLASH <- '/' Spacing -> [orJunction]
+	Comment <- '#' (!EndOfLine .)* EndOfLine
+	EndOfLine <- '\r\n' / '\n'
+	Space <- [[:space:]] / EndOfLine
+	Spacing <- (Space / Comment)* -> [makeEmpty]
 
-# Identifiers #
-IdentStart <- [a-z] / [A-Z] / '_'
-IdentCont <- IdentStart / [0-9]
-Identifier <- (IdentStart IdentCont*):ident Spacing -> ident
+	# Identifiers #
+	IdentStart <- [a-z] / [A-Z] / '_'
+	IdentCont <- IdentStart / [0-9]
+	Identifier <- (IdentStart IdentCont*):ident Spacing -> ident
 
-# Characters and Literals # 
-HexDigit <- [0-9] / [A-F]
-Char <- '\\' ('n' / 'r' / 't' / '\'' / '\"' / '[' / ']' / '\\'):specialChar -> [parseSpecialChar: specialChar]
-	/ '\\' (HexDigit HexDigit):hexChar -> [parseHexChar: hexChar]
-	/ !('\\') .
-Literal <- '\'' (!'\'' Char)*:literal '\'' Spacing
-	 / '\"' (!'\"' Char*):literal '\"' Spacing -> [makeLiteral: literal]
-
-# Character classes #
-BuiltinRange <- '[:' ('alpha' / 'alnum' / 'digit' / 'lower' / 'upper' / 'space'):builtinRange ':]' -> [makeBuiltinRange: builtinRange]
-Range <- (Char):first '-' (Char):second -> [makeRangeFrom: first to: second] / BuiltinRange / (Char):tok -> [makeToken: tok]
-Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [join: rangeList]
+	# Characters and Literals # 
+	HexDigit <- [0-9] / [A-F]
+	Char <- '\\' ('n' / 'r' / 't' / '\'' / '\"' / '[' / ']' / '\\'):specialChar -> [parseSpecialChar: specialChar]
+		/ '\\' (HexDigit HexDigit):hexChar -> [parseHexChar: hexChar]
+		/ !('\\') .
+	Literal <- '\'' (!'\'' Char)*:literal '\'' Spacing
+		 / '\"' (!'\"' Char*):literal '\"' Spacing -> [makeLiteral: literal]
+	
+	# Character classes #
+	BuiltinRange <- '[:' ('alpha' / 'alnum' / 'digit' / 'lower' / 'upper' / 'space'):builtinRange ':]' -> [makeBuiltinRange: builtinRange]
+	Range <- (Char):first '-' (Char):second -> [makeRangeFrom: first to: second] / BuiltinRange / (Char):tok -> [makeToken: tok]
+	Class <- '[' (!']' Range)*:rangeList ']' Spacing -> [join: rangeList]
 
 
 }
 
 EtoileOMeta : EtoileBase {
+	
+	# Special handling for those modifier #
+	QUESTION <- '?':expr Spacing -> [maybeBlock]
+	STAR <- '*':expr Spacing -> [manyBlock]
+	PLUS <- '+':expr Spacing -> [manyOnceBlock]
+	
+	# Main syntax #
+	OmetaList <- Spacing (Ometa+):grammars $ -> grammars
+	Ometa <- Identifier:grammar (SuperGrammarIdentifier?):superGrammar COPEN Grammar:grammarList CCLOSE -> [makeGrammar: grammar parent: superGrammar rules: grammarList]
+	SuperGrammarIdentifier <- COLON Identifier:super -> [makeSuperGrammar: super]
+	Grammar <-  (Definition+):expr -> expr
+	Definition <- (Identifier):ruleName LEFTARROW (Expression):ruleExpression -> [makeRule: ruleName expression: ruleExpression]
+	Expression <- (Sequence):expression1 (SLASH Sequence)*:alternative -> [makeAlternativeExpression: expression1 alternative: alternative]
+	Sequence <- (Prefix*):expressions ((Action / Restriction)?):action -> [makeSequenceExpression: expressions actionOrRestriction: action]
+	Prefix <- (AND / NOT)?:junction Suffix:expression -> [makePrefix: junction exp: expression] 
+		/ Binding:bindingName -> [makeAnythingBind: bindingName]
+	Suffix <- Primary:expression ((QUESTION / STAR / PLUS)?):modifier (Binding?):bindingName (Predicate?):predicate -> [makeExpression: expression modifier: modifier bind: bindingName predicate: predicate]
+	Primary <- (RuleApplication):expr !(LEFTARROW) -> expr
+		/ ParenthesizedExpression
+		/ Literal
+		/ Class
+		/ DOT -> [makeWildcard]
+		/ DOLLAR -> [makeEOF]
+	ParenthesizedExpression <- OPEN Expression:expr CLOSE -> expr
+	RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule]
+	SuperRuleApplication <- CARET Identifier:rule -> [makeRuleLookup: rule fromSuperGrammar: superGrammar]
+	ForeignRuleApplication <- Identifier:grammar '::' Identifier:rule -> [makeRuleLookup: rule fromGrammar: grammar]
+	Binding <- ':' Identifier:bindingName -> bindingName
+	Predicate <- QUESTION OPEN (Identifier):target (Statements):predicateMessage CLOSE -> [makePredicate: predicateMessage target: target]
+	Restriction <- RIGHTARROW Identifier:bindingName -> [makeRestriction: bindingName]
 
-# Special handling for those modifier #
-QUESTION <- '?':expr Spacing -> [maybeBlock]
-STAR <- '*':expr Spacing -> [manyBlock]
-PLUS <- '+':expr Spacing -> [manyOnceBlock]
-
-# Main syntax #
-OmetaList <- Spacing (Ometa+):grammars $ -> grammars
-Ometa <- Identifier:grammar (SuperGrammarIdentifier?):superGrammar COPEN Grammar:grammarList CCLOSE -> [makeGrammar: grammar parent: superGrammar rules: grammarList]
-SuperGrammarIdentifier <- COLON Identifier:super -> [makeSuperGrammar: super]
-Grammar <-  (Definition+):expr -> expr
-Definition <- (Identifier):ruleName LEFTARROW (Expression):ruleExpression -> [makeRule: ruleName expression: ruleExpression]
-Expression <- (Sequence):expression1 (SLASH Sequence)*:alternative -> [makeAlternativeExpression: expression1 alternative: alternative]
-Sequence <- (Prefix*):expressions ((Action / Restriction)?):action -> [makeSequenceExpression: expressions actionOrRestriction: action]
-Prefix <- (AND / NOT)?:junction Suffix:expression -> [makePrefix: junction exp: expression] 
-	/ Binding:bindingName -> [makeAnythingBind: bindingName]
-Suffix <- Primary:expression ((QUESTION / STAR / PLUS)?):modifier (Binding?):bindingName (Predicate?):predicate -> [makeExpression: expression modifier: modifier bind: bindingName predicate: predicate]
-Primary <- (RuleApplication):expr !(LEFTARROW) -> expr
-	/ ParenthesizedExpression
-	/ Literal
-	/ Class
-	/ DOT -> [makeWildcard]
-	/ DOLLAR -> [makeEOF]
-ParenthesizedExpression <- OPEN Expression:expr CLOSE -> expr
-RuleApplication <- SuperRuleApplication / ForeignRuleApplication / Identifier:rule !LEFTARROW -> [makeRuleLookup: rule]
-SuperRuleApplication <- CARET Identifier:rule -> [makeRuleLookup: rule fromSuperGrammar: superGrammar]
-ForeignRuleApplication <- Identifier:grammar '::' Identifier:rule -> [makeRuleLookup: rule fromGrammar: grammar]
-Binding <- ':' Identifier:bindingName -> bindingName
-Predicate <- QUESTION OPEN (Identifier):target (Statements):predicateMessage CLOSE -> [makePredicate: predicateMessage target: target]
-Restriction <- RIGHTARROW Identifier:bindingName -> [makeRestriction: bindingName]
-
-# The Statements rule needs to be implemented in a sub-grammar
-Action <- RIGHTARROW AOPEN Statements:actionStatements ACLOSE -> [makeAction: actionStatements]
+	# The Statements rule needs to be implemented in a sub-grammar
+	Action <- RIGHTARROW AOPEN Statements:actionStatements ACLOSE -> [makeAction: actionStatements]
 }
 
 ActionizedEtoileOMeta : EtoileOMeta {
-Statements <- KeywordMessage / Nullary
-Nullary <- Identifier:nullary -> [makeNullarySelector: nullary]
-KeywordMessagePart <- Keyword:selectorPart Identifier:argument -> [makeKeywordMessagePart: selectorPart argument: argument]
-Keyword <- IdentStart IdentCont* COLON
-KeywordMessage <- (KeywordMessagePart+):selectorArgumentPairs -> [makeSelectorAndArguments: selectorArgumentPairs]
+	Statements <- KeywordMessage / Nullary
+	Nullary <- Identifier:nullary -> [makeNullarySelector: nullary]
+	KeywordMessagePart <- Keyword:selectorPart Identifier:argument -> [makeKeywordMessagePart: selectorPart argument: argument]
+	Keyword <- IdentStart IdentCont* COLON
+	KeywordMessage <- (KeywordMessagePart+):selectorArgumentPairs -> [makeSelectorAndArguments: selectorArgumentPairs]
 }
 

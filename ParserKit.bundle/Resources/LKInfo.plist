@@ -6,7 +6,6 @@
 	<array>
 		<string>Utils.st</string>
 		<string>PKDelayActionArray.st</string>
-		<string>ParserKit.st</string>
 		<string>PKInputStream.st</string>
 		<string>PKEnvironmentStack.st</string>
 		<string>Expressions/PKParseExpression.st</string>
@@ -17,10 +16,13 @@
 		<string>Expressions/PKWhitespaceExpression.st</string>
 		<string>Expressions/PKRangeExpression.st</string>
 		<string>Expressions/PKNumericExpression.st</string>
+		<string>Expressions/PKComposeExpression.st</string>
+		<string>ParserKit.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
 		<string>PKLowercaseExpression</string>
+		<string>PKComposeExpression</string>
 		<string>PKNumericExpression</string>
 		<string>PKRangeExpression</string>
 		<string>PKWhitespaceExpression</string>
@@ -38,6 +40,18 @@
 		<string>PKParseRestriction</string>
 		<string>PKParsePredicate</string>
 		<string>PKDelayActionArray</string>
+		<string>PKActionExpression</string>
+		<string>PKAlternateExpression</string>
+		<string>PKBindExpression</string>
+		<string>PKLookAheadExpression</string>
+		<string>PKMaybeExpression</string>
+		<string>PKNAryAlternateExpression</string>
+		<string>PKNArySequenceExpression</string>
+		<string>PKNegateExpression</string>
+		<string>PKParameterizedExpression</string>
+		<string>PKRepetitionExpression</string>
+		<string>PKRestrictionExpression</string>
+		<string>PKSequenceExpression</string>
 	</array>
 	<key>PrincipalClass</key>
 	<string>Test</string>
