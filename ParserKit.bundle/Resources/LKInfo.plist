@@ -17,6 +17,7 @@
 		<string>Expressions/PKRangeExpression.st</string>
 		<string>Expressions/PKNumericExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
+		<string>Expressions/PKNAryComposeExpression.st</string>
 		<string>ParserKit.st</string>
 	</array>
 	<key>Classes</key>

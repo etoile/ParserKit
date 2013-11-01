@@ -36,6 +36,7 @@ ST_FILES = ParserKit.st\
 	Expressions/PKWhitespaceExpression.st\
 	Expressions/PKRangeExpression.st\
 	Expressions/PKNumericExpression.st\
+	Expressions/PKNAryComposeExpression.st\
 	Expressions/PKComposeExpression.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
