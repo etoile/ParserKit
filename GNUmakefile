@@ -26,6 +26,7 @@ ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
 ST_FILES = ParserKit.st\
 	Utils.st\
 	PKDelayActionArray.st\
+	PKDelayInvocation.st\
 	PKInputStream.st\
 	PKEnvironmentStack.st\
 	Expressions/PKParseExpression.st\

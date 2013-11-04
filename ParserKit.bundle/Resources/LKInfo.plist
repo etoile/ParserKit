@@ -8,6 +8,7 @@
 		<string>PKDelayActionArray.st</string>
 		<string>PKInputStream.st</string>
 		<string>PKEnvironmentStack.st</string>
+		<string>PKDelayInvocation.st</string>
 		<string>Expressions/PKParseExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKAlphabeticExpression.st</string>
@@ -41,6 +42,7 @@
 		<string>PKParseRestriction</string>
 		<string>PKParsePredicate</string>
 		<string>PKDelayActionArray</string>
+		<string>PKDelayInvocation</string>
 		<string>PKActionExpression</string>
 		<string>PKAlternateExpression</string>
 		<string>PKBindExpression</string>
