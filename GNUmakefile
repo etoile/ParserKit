@@ -58,9 +58,10 @@ ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKLowercaseExpressionTest.m\
 	Tests/PKWhitespaceExpressionTest.m\
 	Tests/PKRangeExpressionTest.m\
-	Tests/PKNumericExpressionTest.m
+	Tests/PKNumericExpressionTest.m\
+	Tests/PKDelayInvocationTest.m
 
-${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit
+${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit -lLanguageKitRuntime 
 
 include ../../smalltalk.make
 include $(GNUSTEP_MAKEFILES)/aggregate.make

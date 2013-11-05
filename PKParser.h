@@ -33,7 +33,7 @@
 - (id) position;
 - (unsigned long long) length;
 - (id) stream;
--(id) lastPosition;
+- (id) lastPosition;
 - (id) initWithStream: (id) input;
 @end
 
@@ -50,6 +50,7 @@
 	id action;
 	id delegate;
 }
++ (id) emptyMatch: (id)string;
 - (id) sequenceWith: (id) match;
 - (id) initWithInput: (id) list length: (id) length;
 - (id) isSuccess;
@@ -79,6 +80,18 @@
 @end
 
 @interface PKEnvironmentStack : NSObject
+@end
+
+@interface PKDelayInvocation : NSObject
+{
+	id selector;
+	id args;
+	id original;
+}
++ (id )invocationWithSelector: (id)aSelector arguments: (id)someArgs originalMatch: (id)match;
+- (id) initWithSelector: (id)aSelector arguments: (id)someArgs originalMatch: (id)match;
+- (id) reduceOn: (id)target;
+- (id) canReduce;
 @end
 
 @interface PKParseExpression : NSObject
