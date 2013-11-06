@@ -31,12 +31,30 @@
 {
 	PKInputStream *stream = [[PKInputStream alloc] initWithStream: @"test"];
 	PKParseMatch *match  = [PKParseMatch emptyMatch: stream];
-	PKDelayInvocation *invok = [PKDelayInvocation invocationWithSelector: [Symbol SymbolForSelector: @selector(calledSelector) ]
-															   arguments: [NSArray new] 
-														   originalMatch: match];
+	PKDelayInvocation *invok = [PKDelayInvocation 
+		invocationWithSelector: [Symbol SymbolForSelector: @selector(calledSelector)] 
+					 arguments: [NSArray new] 
+				 originalMatch: match];
+
 	UKTrue([[invok canReduce] boolValue]);
 	UKObjectsEqual([invok reduceOn: self], [NSNull null]);
 	UKTrue(simpleCalled);
+
+	invok = [PKDelayInvocation 
+		invocationWithSelector: [Symbol SymbolForSelector: @selector(calledRangeSelector)]
+					 arguments: [NSArray new]
+				 originalMatch: match];
+
+	UKObjectsEqual([invok reduceOn: self], [NSNull null]);
+	UKTrue(rangeCalled);
+
+	invok = [PKDelayInvocation 
+		invocationWithSelector: [Symbol SymbolForSelector: @selector(keyword:)]
+					 arguments: [NSArray arrayWithObject: [NSNull null]]
+				 originalMatch: match];
+
+	UKObjectsEqual([invok reduceOn: self], [NSNull null]);
+	UKTrue(keywordRangeCalled);
 }
 
 - (id)calledSelector
@@ -47,6 +65,8 @@
 
 - (id)calledRangeSelectorRange: (id)range
 {
+	UKObjectKindOf(range, NSValue);
+	UKIntsEqual([range length], 0);
 	rangeCalled = YES;
 	return [NSNull null];
 }
@@ -55,6 +75,7 @@
 {
 	UKObjectsEqual(arg1, [NSNull null]);
 	keywordRangeCalled = YES;
+	UKIntsEqual([range length], 0);
 	return [NSNull null];
 }
 @end
