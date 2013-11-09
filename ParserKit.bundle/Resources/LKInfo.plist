@@ -4,57 +4,59 @@
 <dict>
 	<key>Sources</key>
 	<array>
-		<string>Utils.st</string>
-		<string>PKDelayActionArray.st</string>
-		<string>PKInputStream.st</string>
-		<string>PKEnvironmentStack.st</string>
-		<string>PKDelayInvocation.st</string>
-		<string>Expressions/PKParseExpression.st</string>
-		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKAlphabeticExpression.st</string>
-		<string>Expressions/PKUppercaseExpression.st</string>
-		<string>Expressions/PKLowercaseExpression.st</string>
-		<string>Expressions/PKWhitespaceExpression.st</string>
-		<string>Expressions/PKRangeExpression.st</string>
-		<string>Expressions/PKNumericExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
+		<string>Expressions/PKDotExpression.st</string>
+		<string>Expressions/PKEmptyExpression.st</string>
+		<string>Expressions/PKLowercaseExpression.st</string>
 		<string>Expressions/PKNAryComposeExpression.st</string>
+		<string>Expressions/PKNumericExpression.st</string>
+		<string>Expressions/PKParseExpression.st</string>
+		<string>Expressions/PKRangeExpression.st</string>
+		<string>Expressions/PKUppercaseExpression.st</string>
+		<string>Expressions/PKWhitespaceExpression.st</string>
+		<string>PKDelayActionArray.st</string>
+		<string>PKDelayInvocation.st</string>
+		<string>PKEnvironmentStack.st</string>
+		<string>PKInputStream.st</string>
 		<string>ParserKit.st</string>
+		<string>Utils.st</string>
 	</array>
 	<key>Classes</key>
 	<array>
-		<string>PKLowercaseExpression</string>
-		<string>PKComposeExpression</string>
-		<string>PKNumericExpression</string>
-		<string>PKRangeExpression</string>
-		<string>PKWhitespaceExpression</string>
-		<string>PKAlphabeticExpression</string>
-		<string>PKUppercaseExpression</string>
-		<string>PKDotExpression</string>
-		<string>PKEnvironmentStack</string>
-		<string>PKParseExpression</string>
-		<string>PKInputStream</string>
-		<string>PKTokenExpression</string>
-		<string>PKParseMatch</string>
-		<string>PKParseFail</string>
-		<string>PKParseAction</string>
-		<string>PKMatchRangeNotice</string>
-		<string>PKParseRestriction</string>
-		<string>PKParsePredicate</string>
-		<string>PKDelayActionArray</string>
-		<string>PKDelayInvocation</string>
 		<string>PKActionExpression</string>
+		<string>PKAlphabeticExpression</string>
 		<string>PKAlternateExpression</string>
 		<string>PKBindExpression</string>
+		<string>PKComposeExpression</string>
+		<string>PKDelayActionArray</string>
+		<string>PKDelayInvocation</string>
+		<string>PKDotExpression</string>
+		<string>PKEnvironmentStack</string>
+		<string>PKEmptyExpression</string>
+		<string>PKInputStream</string>
 		<string>PKLookAheadExpression</string>
+		<string>PKLowercaseExpression</string>
+		<string>PKMatchRangeNotice</string>
 		<string>PKMaybeExpression</string>
 		<string>PKNAryAlternateExpression</string>
 		<string>PKNArySequenceExpression</string>
 		<string>PKNegateExpression</string>
+		<string>PKNumericExpression</string>
 		<string>PKParameterizedExpression</string>
+		<string>PKParseAction</string>
+		<string>PKParseExpression</string>
+		<string>PKParseFail</string>
+		<string>PKParseMatch</string>
+		<string>PKParsePredicate</string>
+		<string>PKParseRestriction</string>
+		<string>PKRangeExpression</string>
 		<string>PKRepetitionExpression</string>
 		<string>PKRestrictionExpression</string>
 		<string>PKSequenceExpression</string>
+		<string>PKTokenExpression</string>
+		<string>PKUppercaseExpression</string>
+		<string>PKWhitespaceExpression</string>
 	</array>
 	<key>PrincipalClass</key>
 	<string>Test</string>

@@ -414,28 +414,6 @@ PKParseExpression subclass: PKTokenExpression [
 	]
 ]
 
-PKParseExpression subclass: PKEmptyExpression [
-	| +instance |
-
-	+initialize [
-        instance := self new.
-	]
-
-	+uniqueInstance [
-        ^instance
-	]
-
-	parseInput: list withCurrentParser: parser delegate: delegate [
-		^list atEnd
-            ifTrue: [PKParseMatch alloc initWithInput: list length: 0]
-			ifFalse: [PKParseFail alloc initWithInput: list description:  'Expected an empty string'] 
-	]
-
-	description [
-		^ '$'
-	]
-]
-
 PKParseExpression subclass: PKAnythingExpression [
 	| +instance |
 
@@ -447,7 +425,7 @@ PKParseExpression subclass: PKAnythingExpression [
 		^instance
 	]
 
-	parseInput: list  withCurrentParser: parser delegate: delegate [ ^PKParseMatch alloc initWithInput: list length: 0]
+	parseInput: list  withCurrentParser: parser delegate: delegate [ ^PKParseMatch emptyMatch: list]
 
 	description [ ^'']
 ]
@@ -2062,6 +2040,19 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			messageInit setTarget: messageAlloc.
 			messageInit 
 		].
+		^messageInit
+	]
+
+	makeRestriction: binding [
+		| pkRestriction messageAlloc messageInit |
+		pkRestriction := LKSymbolRef referenceWithSymbol: 'PKParseRestriction'.
+		messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
+		messageAlloc setTarget: pkRestriction.
+
+		"Should be Fix with selValue message send"
+		messageInit := LKMessageSend messageWithSelectorName: 'initWithBinding:'
+				arguments: { LKLiteral literalFromString: binding }.
+		messageInit setTarget: messageAlloc.
 		^messageInit
 	]
 
