@@ -5,6 +5,7 @@
 	<key>Sources</key>
 	<array>
 		<string>Expressions/PKAlphabeticExpression.st</string>
+		<string>Expressions/PKAnythingExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKEmptyExpression.st</string>
@@ -27,6 +28,7 @@
 		<string>PKActionExpression</string>
 		<string>PKAlphabeticExpression</string>
 		<string>PKAlternateExpression</string>
+		<string>PKAnythingExpression</string>
 		<string>PKBindExpression</string>
 		<string>PKComposeExpression</string>
 		<string>PKDelayActionArray</string>

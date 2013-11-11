@@ -113,6 +113,9 @@
 @interface PKEmptyExpression : PKParseExpression
 @end
 
+@interface PKAnythingExpression : PKParseExpression
+@end
+
 @interface PKUppercaseExpression : PKParseExpression
 @end
 

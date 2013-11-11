@@ -39,7 +39,8 @@ ST_FILES = ParserKit.st\
 	Expressions/PKNumericExpression.st\
 	Expressions/PKNAryComposeExpression.st\
 	Expressions/PKComposeExpression.st\
-	Expressions/PKEmptyExpression.st
+	Expressions/PKEmptyExpression.st\
+	Expressions/PKAnythingExpression.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native
@@ -61,6 +62,7 @@ ${BUNDLE_NAME}_OBJC_FILES = \
 	Tests/PKRangeExpressionTest.m\
 	Tests/PKNumericExpressionTest.m\
 	Tests/PKEmptyExpressionTest.m\
+	Tests/PKAnythingExpressionTest.m\
 	Tests/PKDelayInvocationTest.m
 
 ${BUNDLE_NAME}_OBJC_LIBS += -lUnitKit -lLanguageKitRuntime 

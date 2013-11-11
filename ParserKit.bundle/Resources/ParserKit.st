@@ -414,22 +414,6 @@ PKParseExpression subclass: PKTokenExpression [
 	]
 ]
 
-PKParseExpression subclass: PKAnythingExpression [
-	| +instance |
-
-	+initialize [
-		instance := self new.
-	]
-
-	+uniqueInstance [
-		^instance
-	]
-
-	parseInput: list  withCurrentParser: parser delegate: delegate [ ^PKParseMatch emptyMatch: list]
-
-	description [ ^'']
-]
-
 PKParseExpression subclass: PKSequenceExpression [
  	| e1 e2 |
 
