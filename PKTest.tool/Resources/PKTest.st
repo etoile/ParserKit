@@ -226,14 +226,12 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: '     Testing AST generator parser'; cr.
 		ETTranscript show: '------------------------------------'; cr.
 		parser := PKParser alloc initWithGrammar: 'ActionizedEtoileOMeta'.
-		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
+		content := NSFileManager defaultManager contentsAtPath: './simple.pk'.
 		contentString := NSString alloc initWithData: content encoding: 4.
 
 		parser setDelegate: PKParserASTGenerator new.
 		match := parser match: contentString rule: 'OmetaList'.
 
-		"ETTranscript show: 'Root action '; show: match matchAction; cr.
-		ETTranscript show: 'Match: '; show: match; cr."
 		ETTranscript show: match reduce; cr.
 	]
 

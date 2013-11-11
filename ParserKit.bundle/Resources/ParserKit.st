@@ -1840,7 +1840,6 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	makeGrammar: grammarName parent: parentName rules: methods [
 		| parentClassName newGrammar |
 
-		ETTranscript debug: 'List of methods '; debug: methods; debugCr.
 		parentClassName := (parentName = '') ifTrue: [ 'PKParser'] ifFalse: ['PK',parentName].
 	
 		newGrammar := LKSubclass subclassWithName: 'PK',grammarName
@@ -1969,6 +1968,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeExpression:exp modifier: modifier bind: name predicate: predicate [
 		| suffixExp |
+		"Todo"
 		ETTranscript show: 'modifier class '; show: modifier class; cr.
 		suffixExp :=  modifier = '' ifTrue: [exp] ifFalse: [ 
 			ETTranscript show: 'Block called';cr.
@@ -2042,8 +2042,6 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeSequenceExpression: exp actionOrRestriction: action [
 		| expression |
-
-		ETTranscript show: 'Make Sequence: '; show: exp; cr.
 		expression := (exp isKindOfClass: NSArray class) ifTrue: [
 			exp leftFoldWithInitialValue: nil
 				intoBlock: [:acc :exp | 
@@ -2060,15 +2058,25 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			expressionTemp :=  self genTemp.
 			methodStatements addObject: (LKAssignExpr assignWithTarget: expressionTemp expr: expression).
 			expression := expressionTemp.
-			methodStatements addObject: (LKMessageSend messageWithSelectorName: 'attachAction:' arguments:  { actionTemp} ).
-			
+			expressionValue := LKMessageSend messageWithSelectorName: 'attachAction:' arguments:  { actionTemp}.
+			expressionValue setTarget: expression.
+			methodStatements addObject: expressionValue.
 		].
 		^expression
 	]
 
 
 	makePrefix: prefix exp: exp [
+		| temp test |
 		ETTranscript show: 'makePrefix:..ex: ', exp description; cr.
+		" TODO finish here"
+		^prefix = '&' ifTrue: [exp] ifFalse: [
+			temp := self genTemp.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: temp expr: exp).
+			test := LKMessageSend messageWithSelectorName: 'isSuccess' arguments: {}.
+			test setTarget: temp.
+			temp.
+		]
 	]
 
 	join: list [
