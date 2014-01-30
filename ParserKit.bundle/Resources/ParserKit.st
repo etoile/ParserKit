@@ -191,6 +191,7 @@ PKParseAction subclass: PKParsePredicate [
 		target := env objectForKey: targetName.
 		target == nil ifTrue: [target := targetName].
 		invocation := NSInvocation invocationWithTarget: target selector: selector arguments: arguments.
+		ETTranscript show: 'Invoking selector: '; show: selector;cr.
 		invocation invoke.
 		^invocation returnValueAsBool
 	]
@@ -542,7 +543,7 @@ PKComposeExpression subclass: PKNegateExpression [
 	parseInput: list withCurrentParser: parser delegate: delegate [
 		| match |
 		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
-		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp description] 
+		^match isSuccess ifTrue: [PKParseFail alloc initWithInput: list description: 'Should not match ', exp expression description] 
 						 ifFalse: [PKParseMatch alloc initWithInput: list length: 0]
 	]
 ]
@@ -1807,10 +1808,14 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		  self getFailureWithDescription: ('Expected literal "', theLit description, '"') cause: nil }
 	]
 
-	makeToken: tok [ self makeLiteral: tok ]
+	makeToken: tok [ 
+		ETTranscript show: 'makeToken:'; cr.
+		self makeLiteral: tok 
+	]
 
 	makeWildcard [
 		| isAtEnd getHead getHeadLength|
+		ETTranscript show: 'makeWildcard'; cr.
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
 		isAtEnd setTarget: inputStreamDeclaration.
 		getHead := LKMessageSend messageWithSelectorName: 'head'.
@@ -1825,6 +1830,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeEOF [ 
 		| isAtEnd |
+		ETTranscript show: 'makeEOF'; cr.
 		isAtEnd := LKMessageSend messageWithSelectorName: 'atEnd'.
 		isAtEnd setTarget: inputStreamDeclaration.
 		^LKIfStatement ifStatementWithCondition: isAtEnd
@@ -1834,11 +1840,14 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	makeSuperGrammar: ident [
+		"TODO"
+		ETTranscript show: 'makeSuperGrammar:'; cr.
 		^ ident.
 	]
 
 	makeGrammar: grammarName parent: parentName rules: methods [
 		| parentClassName newGrammar |
+		ETTranscript show: 'makeGrammar:';show: grammarName; show: ' parent:'; show: parentName; show: ' rules:'; show: methods; cr.
 
 		parentClassName := (parentName = '') ifTrue: [ 'PKParser'] ifFalse: ['PK',parentName].
 	
@@ -1853,6 +1862,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeAlternativeExpression: exp1 alternative: alts [
 		| matchFirst test isBlock exp if testLoop match |
+		ETTranscript show: 'makeAlternativeExpression:alternative:'; cr.
 		alts = '' ifTrue: [^exp1].
 		matchFirst := self genTemp.
 		methodStatements addObject: (LKAssignExpr assignWithTarget: matchFirst expr: exp1).
@@ -1878,9 +1888,10 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRule: ruleName expression: statement [
 		| message method |
+		ETTranscript show: 'makeRule:expression:'; cr.
 		"TODO: Need to add the methodStatements and locals vars. statements should be
 		 transformed into a return node"
-		message := LKMessageSend messageWithSelectorName:  ruleName.
+		message := LKMessageSend messageWithSelectorName: ('parser', ruleName, 'FromInputStream:').
 		methodStatements addObject: (LKReturn returnWithExpr: statement).
 		method := LKMethod methodWithSignature: message locals: tempDecl statements: methodStatements.
 		tempDecl := NSMutableDictionary new.
@@ -1891,6 +1902,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRuleLookup: ruleName [
 		| msg |
+		ETTranscript show: 'makeRuleLookup:'; cr.
 		msg := LKMessageSend messageWithSelectorName: ('parser', ruleName, 'FromInputStream:')
 			                 arguments: { inputStreamDeclaration }.
 		msg setTarget: (LKSelfRef referenceWithSymbol: 'self').
@@ -1899,6 +1911,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRuleLookup: ruleName fromSuperGrammar: superGrammar [
 		| msg |
+		ETTranscript show: 'makeRuleLookup:fromSuperGrammar:'; cr.
 		msg := LKMessageSend messageWithSelectorName: ('parse', ruleName, 'FromInputStream:')
 			                 arguments: { inputStreamDeclaration }.
 		msg setTarget: (LKSuperRef referenceWithSymbol: 'super').
@@ -1907,6 +1920,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRuleLookup: ruleName fromGrammar: grammarName [
 		| lookupMsg parseMsg  |
+		ETTranscript show: 'makeRuleLookup:fromGrammar:'; cr.
 		" Foreign rule invocations require us to obtain a parser for
 		  the grammar and invoke the method corresponding to the rule
 		  from there.  The external parameter is going to be instance
@@ -1917,8 +1931,9 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		^parseMsg.
 	]
 
-	makeBuiltinRange: name [	
+	makeBuiltinRange: name [
 		| listHead charAtIndex comparison |
+		ETTranscript show: 'makeBuiltinRange:'; cr.
 
 		listHead := LKMessageSend messageWithSelectorName: 'head'.
 		listHead setTarget: inputStreamDeclaration.
@@ -1939,6 +1954,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRangeFrom: first to: last [
 		| block lteLast gteFirst predicate listHead charAtIndex charAssign matchIf blockInvoke |
+		ETTranscript show: 'makeRangeFrom:to:'; cr.
 		listHead := LKMessageSend messageWithSelectorName: 'head'.
 		listHead setTarget: inputStreamDeclaration.
 		charAtIndex := LKMessageSend messageWithSelectorName: 'characterAtIndex:'
@@ -1967,27 +1983,38 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 	]
 
 	makeExpression:exp modifier: modifier bind: name predicate: predicate [
-		| suffixExp |
-		"Todo"
-		ETTranscript show: 'modifier class '; show: modifier class; cr.
+		| suffixExp  lit temp msg |
+		ETTranscript show: 'makeExpression:modifier:bind:predicate:'; cr.
+		"TODO do the make Predicate stuff"
 		suffixExp :=  modifier = '' ifTrue: [exp] ifFalse: [ 
-			ETTranscript show: 'Block called';cr.
 			modifier value: exp ] .
-		
-		ETTranscript show: 'suffixExp ', suffixExp description; cr.
+		ETTranscript show: 'SuffixExp: '; show: suffixExp; cr.
+		name = '' ifFalse: [
+			temp := self genTemp.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: temp expr: suffixExp).
+			lit := LKLiteral literalFromString: name.
+			msg := LKMessageSend messageWithSelectorName: 'bind:'
+										arguments: {lit}.
+			msg setTarget: temp.
+			suffixExp := temp.
+		].
+		^suffixExp
 	]
 
 	makeNullarySelector: sel [
+		ETTranscript show: 'makeNullarySelector:'; cr.
 		^sel selValue
 	]
 
 	makeKeywordMessagePart: keyword argument: arg [
+		ETTranscript show: 'makeKeywordMessagePart:'; cr.
 		^NSDictionary dictionaryWithObjects: { keyword componentsJoinedByString: ''. arg }
 		                            forKeys: { 'selectorPart'. 'argumentName' }
 	]
 
 	makeSelectorAndArguments: components [
 		| selector args |
+		ETTranscript show: 'makeSelectorAndArguments:'; cr.
 		selector := ''.
 		args := NSMutableArray new.
 		(components isKindOfClass: NSArray class) ifFalse: [ components := { components } ].
@@ -2001,15 +2028,18 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeAction: invokation [
 		| pkParseAction messageAlloc messageInit arguments |
+		ETTranscript show: 'makeAction:'; cr.
 		(invokation isKindOfClass: NSDictionary class) ifTrue: [
+			arguments := NSMutableArray new.
 			pkParseAction := LKSymbolRef referenceWithSymbol: 'PKParseAction'.
 			messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
 			messageAlloc setTarget: pkParseAction.
 
 			"Should be Fix with selValue message send"
+			arguments addObject: (LKLiteral  literalFromString: (invokation objectForKey: 'selector')).
+			arguments addObject: (LKArrayExpr arrayWithElements: (invokation objectForKey: 'arguments')).
 			messageInit := LKMessageSend messageWithSelectorName: 'initWithSelector:argumentNames:'
-					arguments: { LKLiteral literalFromString: ( invokation objectForKey: 'selector').
-								 LKLiteral literalFromString: ( invokation objectForKey: 'arguments') }.
+					arguments:(NSArray arrayWithArray: arguments).
 			messageInit setTarget: messageAlloc.
 			messageInit
 		] ifFalse: [
@@ -2020,7 +2050,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			arguments addObject: (LKLiteral literalFromString: invokation).
 			arguments addObject: LKNilRef builtin.
 			messageInit := LKMessageSend messageWithSelectorName: 'initWithSelector:argumentNames:'
-					arguments: arguments.
+					arguments:(NSArray arrayWithArray: arguments).
 			messageInit setTarget: messageAlloc.
 			messageInit 
 		].
@@ -2029,6 +2059,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeRestriction: binding [
 		| pkRestriction messageAlloc messageInit |
+		ETTranscript show: 'makeRestriction:'; cr.
 		pkRestriction := LKSymbolRef referenceWithSymbol: 'PKParseRestriction'.
 		messageAlloc := LKMessageSend messageWithSelectorName: 'alloc'.
 		messageAlloc setTarget: pkRestriction.
@@ -2042,6 +2073,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 	makeSequenceExpression: exp actionOrRestriction: action [
 		| expression |
+		ETTranscript show: 'makeSequenceExpression:actionOrRestriction:';cr.
 		expression := (exp isKindOfClass: NSArray class) ifTrue: [
 			exp leftFoldWithInitialValue: nil
 				intoBlock: [:acc :exp | 
@@ -2067,16 +2099,36 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 
 
 	makePrefix: prefix exp: exp [
-		| temp test |
+		| return temp test pop emptyMatch |
 		ETTranscript show: 'makePrefix:..ex: ', exp description; cr.
-		" TODO finish here"
-		^prefix = '&' ifTrue: [exp] ifFalse: [
+		prefix = '!' ifTrue: [
 			temp := self genTemp.
 			methodStatements addObject: (LKAssignExpr assignWithTarget: temp expr: exp).
-			test := LKMessageSend messageWithSelectorName: 'isSuccess' arguments: {}.
+			test := LKMessageSend messageWithSelectorName: 'isFailure' arguments: {}.
 			test setTarget: temp.
-			temp.
-		]
+			pop := LKMessageSend messageWithSelectorName: 'popPosition'.
+			pop setTarget: inputStreamDeclaration.
+			methodStatements addObject: (LKIfStatement ifStatementWithCondition: test then: {temp} else: {pop}).
+			return := temp.
+		].
+		prefix = '&' ifTrue: [
+			temp := self genTemp.
+			methodStatements addObject: (LKAssignExpr assignWithTarget: temp expr: exp).
+			test := LKMessageSend messageWithSelectorName: 'isFailure' arguments: {}.
+			test setTarget: temp.
+			pop := LKMessageSend messageWithSelectorName: 'popPosition'.
+			pop setTarget: inputStreamDeclaration.
+			emptyMatch := LKMessageSend messageWithSelectorName: 'emptyMatch:' arguments: {inputStreamDeclaration}.
+			emptyMatch setTarget: (LKSymbolRef referenceWithSymbol: 'PKParseMatch').
+			return := LKIfStatement ifStatementWithCondition: test 
+				then: { emptyMatch } 
+				else: {
+					pop. 
+					self genFailDescription: (LKLiteral literalFromString: 'Expression is not expected')} 
+		].
+		return == nil ifTrue: [return := exp].
+		ETTranscript show: 'MakePrefix return: '; show: return; cr.
+		^return
 	]
 
 	join: list [
