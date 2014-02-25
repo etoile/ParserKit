@@ -1301,43 +1301,6 @@ NSObject subclass: PKDelayedExpressionBuilder [
 	]
 ]
 
-
-NSObject subclass: PKParserAbstractGenerator [
-	| delegate specialCharToChar |
-
-	init [
-		super init.
-		specialCharToChar := NSMutableDictionary new.
-		specialCharToChar setValue: '\n' forKey: 'n'.
-		specialCharToChar setValue: '\t' forKey: 't'.
-		specialCharToChar setValue: '\r' forKey: 'r'.
-		specialCharToChar setValue: '\\' forKey: '\\'.
-		specialCharToChar setValue: '''' forKey: ''''.
-		specialCharToChar setValue: '"' forKey: '"'.
-		specialCharToChar setValue: '[' forKey: '['.
-		specialCharToChar setValue: ']' forKey: ']'.
-		^self
-	]
-
-	setDelegate: aDelegate [
-		delegate := aDelegate
-	]	
-
-	makeEmpty [^'']
-
-	parseSpecialChar: char [
-		^specialCharToChar objectForKey: char
-	]
-
-	parseHexChar: value [
-		| scanner return |
-		scanner := NSScanner scannerWithString: value.
-		return := NSMutableString new.
-		return appendCharacter: scanner hexIntegerValue.
-		^return
-	]
-
-]
 "
   Delegate class that generates a grammar. The main entry point is
   #makeGrammar:parent:rules. That method also installs the parsed grammars into
@@ -1607,6 +1570,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		| ifTest match assign test |
 		
 		match := self genTemp.
+		ETTranscript show: 'genOr:alternate: First exp: '; show: first; cr.
 		methodStatements addObject: ( LKAssignExpr assignWithTarget: match expr: first).
 		ifTest := LKMessageSend messageWithSelectorName: 'isFailure'.
 		ifTest setTarget: match.
@@ -1637,9 +1601,8 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		} else: { 	 
 			self genFailDescription: (LKLiteral literalFromString: 'Both expression failed') 
 		}.
-		methodStatements addObject: firstAssign.
 		methodStatements addObject: secondAssign.
-
+		methodStatements addObject: firstAssign.
 		^test
 	]
 
@@ -1996,7 +1959,7 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 			msg := LKMessageSend messageWithSelectorName: 'bind:'
 										arguments: {lit}.
 			msg setTarget: temp.
-			suffixExp := temp.
+			suffixExp := msg.
 		].
 		^suffixExp
 	]
@@ -2077,11 +2040,12 @@ PKParserAbstractGenerator subclass: PKParserASTGenerator [
 		expression := (exp isKindOfClass: NSArray class) ifTrue: [
 			exp leftFoldWithInitialValue: nil
 				intoBlock: [:acc :exp | 
-					acc = nil ifTrue: [exp]
+					acc == nil ifTrue: [exp]
 						ifFalse: [self genSeq: acc alternate: exp]
 				]
 		]
 			ifFalse: [ expression := exp].
+		ETTranscript show: 'Expression after left fold: '; show: expression; cr.
 		action = '' ifFalse: [
 			| actionTemp actionExpr expressionValue expressionTemp |
 			actionTemp := self genTemp.

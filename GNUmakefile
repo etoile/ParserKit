@@ -40,7 +40,8 @@ ST_FILES = ParserKit.st\
 	Expressions/PKNAryComposeExpression.st\
 	Expressions/PKComposeExpression.st\
 	Expressions/PKEmptyExpression.st\
-	Expressions/PKAnythingExpression.st
+	Expressions/PKAnythingExpression.st\
+	Generator/PKParserAbstractGenerator.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
 ADDITIONAL_OBJCFLAGS +=  -march=native

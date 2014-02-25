@@ -59,7 +59,7 @@ NSObject subclass: SmalltalkTool [
 		| dict parser b c tExp  oMeta oMetaMatch content contentString match |
 
 		ETTranscript setDebugMode: false.
-		self testPKNode.
+		"self testPKNode.
 		oMeta := PKParser alloc initWithNewGrammar: 'Test'.
 		oMeta addRule: 'foo'  expression: 'foo' asExp .
 		oMeta := PKParser alloc initWithGrammar: '_ActionizedEtoileOMeta'.
@@ -78,16 +78,16 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: (oMeta match:( '[a-d\34] ') rule: 'Class').
 		ETTranscript show: (oMeta match:( '[a-dA-Z]\n') rule: 'Class').
 		ETTranscript show: (oMeta match:( '''foo'' bar') rule: 'Literal').
-		ETTranscript show: (oMeta match:( '"bar" foo') rule: 'Literal').
+		ETTranscript show: (oMeta match:( '""bar"" foo') rule: 'Literal').
 		ETTranscript show: (oMeta match:( '. ? ') rule: 'Suffix').
-		ETTranscript show: (oMeta match:( '([zf]"oo")?') rule: 'Suffix').
+		ETTranscript show: (oMeta match:( '([zf]""oo"")?') rule: 'Suffix').
 		ETTranscript show: (oMeta match: '' rule: 'Spacing').
 		ETTranscript show: (oMeta match: 'One <- .' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'EndOfLine <- "\r\n"' rule: 'Grammar').
-		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- "\r\n" }' rule: 'Ometa').
+		ETTranscript show: (oMeta match: 'EndOfLine <- ""\r\n""' rule: 'Grammar').
+		ETTranscript show: (oMeta match: 'Ometa { EndOfLine <- ""\r\n"" }' rule: 'Ometa').
 		ETTranscript show: (oMeta match: 'Foo' rule: 'Identifier').
 		oMeta setDelegate: (PKParserASTGenerator new).
-		oMetaMatch := oMeta match:  '"\r\n"' rule: 'Literal'.
+		oMetaMatch := oMeta match:  '""\r\n""' rule: 'Literal'.
 		ETTranscript show: oMetaMatch description;cr.
 		oMetaMatch reduce.
 		content := NSFileManager defaultManager contentsAtPath: './ometa.pk'.
@@ -133,7 +133,7 @@ NSObject subclass: SmalltalkTool [
 		ETTranscript show: match.
 		ETTranscript show: match reduce; cr.
 
-		self testFinalParser.
+		"self testFinalParser.
 		self testSmalltalkParser.
 		self testCalc.
 		self testOmetaASTGenerator.
