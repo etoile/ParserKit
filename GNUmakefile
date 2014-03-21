@@ -41,6 +41,7 @@ ST_FILES = ParserKit.st\
 	Expressions/PKNAryComposeExpression.st\
 	Expressions/PKComposeExpression.st\
 	Expressions/PKEmptyExpression.st\
+	Expressions/PKRestrictionExpression.st\
 	Expressions/PKAnythingExpression.st\
 	Generator/PKParserAbstractGenerator.st
 
