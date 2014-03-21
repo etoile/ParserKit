@@ -255,26 +255,6 @@ NSObject subclass: PKRestrictedMatch [
 
 ============================================================================
 "
-PKComposeExpression subclass: PKActionExpression [
-	| action |
-	
-	initWithExp: aExp action: anAction [
-		super initWithExp: aExp.
-		action := anAction
-	]
-
-	parseInput: list withCurrentParser: parser delegate: delegate [
-		| match |
-		
-		match := exp parseInput: list withCurrentParser: parser delegate: delegate.
-		match isSuccess  ifTrue: [
-			match attachAction: (action invocationInEnvironment: list environment originalMatch: match)
-		].
-		
-		^match
-	]
-	description [ ^exp description, ' -> ', action description ]
-]
 
 " Restricted expressions are a quick hack to work around the fact that our 
   delegate based action syntax does not allow us to replace the parse match with

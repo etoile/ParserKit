@@ -8,6 +8,7 @@
 		<string>Expressions/PKAnythingExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
+		<string>Expressions/PKActionExpression.st</string>
 		<string>Expressions/PKEmptyExpression.st</string>
 		<string>Expressions/PKLowercaseExpression.st</string>
 		<string>Expressions/PKNAryComposeExpression.st</string>

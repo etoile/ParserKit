@@ -29,6 +29,7 @@ ST_FILES = ParserKit.st\
 	PKDelayInvocation.st\
 	PKInputStream.st\
 	PKEnvironmentStack.st\
+	Expressions/PKActionExpression.st\
 	Expressions/PKParseExpression.st\
 	Expressions/PKDotExpression.st\
 	Expressions/PKAlphabeticExpression.st\
