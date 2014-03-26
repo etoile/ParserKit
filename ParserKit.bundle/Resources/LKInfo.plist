@@ -7,6 +7,7 @@
 		<string>Expressions/PKAlphabeticExpression.st</string>
 		<string>Expressions/PKAnythingExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
+		<string>Expressions/PKAlphanumericExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKActionExpression.st</string>
 		<string>Expressions/PKRestrictionExpression.st</string>
@@ -14,9 +15,12 @@
 		<string>Expressions/PKLowercaseExpression.st</string>
 		<string>Expressions/PKNAryComposeExpression.st</string>
 		<string>Expressions/PKNumericExpression.st</string>
+		<string>Expressions/PKNonTerminalExpression.st</string>
 		<string>Expressions/PKParseExpression.st</string>
+		<string>Expressions/PKParameterizedExpression.st</string>
 		<string>Expressions/PKRangeExpression.st</string>
 		<string>Expressions/PKUppercaseExpression.st</string>
+		<string>Expressions/PKTokenExpression.st</string>
 		<string>Expressions/PKWhitespaceExpression.st</string>
 		<string>Generator/PKParserAbstractGenerator.st</string>
 		<string>PKParseAction.st</string>
@@ -35,6 +39,7 @@
 	<array>
 		<string>PKActionExpression</string>
 		<string>PKAlphabeticExpression</string>
+		<string>PKAlphanumericExpression</string>
 		<string>PKAlternateExpression</string>
 		<string>PKAnythingExpression</string>
 		<string>PKBindExpression</string>
@@ -51,6 +56,7 @@
 		<string>PKMaybeExpression</string>
 		<string>PKNAryAlternateExpression</string>
 		<string>PKNArySequenceExpression</string>
+		<string>PKNonTerminalExpression</string>
 		<string>PKNegateExpression</string>
 		<string>PKNumericExpression</string>
 		<string>PKParameterizedExpression</string>

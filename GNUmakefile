@@ -43,11 +43,15 @@ ST_FILES = ParserKit.st\
 	Expressions/PKWhitespaceExpression.st\
 	Expressions/PKRangeExpression.st\
 	Expressions/PKNumericExpression.st\
+	Expressions/PKNonTerminalExpression.st\
+	Expressions/PKAlphanumericExpression.st\
 	Expressions/PKNAryComposeExpression.st\
 	Expressions/PKComposeExpression.st\
 	Expressions/PKEmptyExpression.st\
 	Expressions/PKRestrictionExpression.st\
 	Expressions/PKAnythingExpression.st\
+	Expressions/PKParameterizedExpression.st\
+	Expressions/PKTokenExpression.st\
 	Generator/PKParserAbstractGenerator.st
 
 SMALLTALK_BUNDLE_ST_FILES=$(addprefix ./ParserKit.bundle/Resources/,$(ST_FILES))
