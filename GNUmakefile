@@ -26,6 +26,7 @@ ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
 ST_FILES = ParserKit.st\
 	Utils.st\
 	PKParseAction.st\
+	PKParseMatch.st\
 	PKParseRestriction.st\
 	PKRestrictedMatch.st\
 	PKParsePredicate.st\
@@ -35,6 +36,8 @@ ST_FILES = ParserKit.st\
 	PKEnvironmentStack.st\
 	PKMatchRangeNotice.st\
 	Expressions/PKActionExpression.st\
+	Expressions/PKAlternateExpression.st\
+	Expressions/PKBindExpression.st\
 	Expressions/PKParseExpression.st\
 	Expressions/PKDotExpression.st\
 	Expressions/PKAlphabeticExpression.st\
@@ -42,15 +45,23 @@ ST_FILES = ParserKit.st\
 	Expressions/PKLowercaseExpression.st\
 	Expressions/PKWhitespaceExpression.st\
 	Expressions/PKRangeExpression.st\
+	Expressions/PKMaybeExpression.st\
 	Expressions/PKNumericExpression.st\
+	Expressions/PKNAryAlternateExpression.st\
+	Expressions/PKNegateExpression.st\
 	Expressions/PKNonTerminalExpression.st\
+	Expressions/PKNonTerminalLookupExpression.st\
 	Expressions/PKAlphanumericExpression.st\
+	Expressions/PKLookAheadExpression.st\
 	Expressions/PKNAryComposeExpression.st\
+	Expressions/PKNArySequenceExpression.st\
 	Expressions/PKComposeExpression.st\
 	Expressions/PKEmptyExpression.st\
 	Expressions/PKRestrictionExpression.st\
+	Expressions/PKRepetitionExpression.st\
 	Expressions/PKAnythingExpression.st\
 	Expressions/PKParameterizedExpression.st\
+	Expressions/PKSequenceExpression.st\
 	Expressions/PKTokenExpression.st\
 	Generator/PKParserAbstractGenerator.st
 

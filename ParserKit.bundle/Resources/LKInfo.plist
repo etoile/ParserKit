@@ -4,22 +4,33 @@
 <dict>
 	<key>Sources</key>
 	<array>
+		<string>PKParseMatch.st</string>
 		<string>Expressions/PKAlphabeticExpression.st</string>
 		<string>Expressions/PKAnythingExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
 		<string>Expressions/PKAlphanumericExpression.st</string>
+		<string>Expressions/PKAlternateExpression.st</string>
+		<string>Expressions/PKBindExpression.st</string>
 		<string>Expressions/PKDotExpression.st</string>
 		<string>Expressions/PKActionExpression.st</string>
 		<string>Expressions/PKRestrictionExpression.st</string>
 		<string>Expressions/PKEmptyExpression.st</string>
 		<string>Expressions/PKLowercaseExpression.st</string>
+		<string>Expressions/PKLookAheadExpression.st</string>
+		<string>Expressions/PKMaybeExpression.st</string>
 		<string>Expressions/PKNAryComposeExpression.st</string>
+		<string>Expressions/PKNAryAlternateExpression.st</string>
+		<string>Expressions/PKNArySequenceExpression.st</string>
+		<string>Expressions/PKNonTerminalLookupExpression.st</string>
 		<string>Expressions/PKNumericExpression.st</string>
+		<string>Expressions/PKNegateExpression.st</string>
 		<string>Expressions/PKNonTerminalExpression.st</string>
 		<string>Expressions/PKParseExpression.st</string>
 		<string>Expressions/PKParameterizedExpression.st</string>
+		<string>Expressions/PKRepetitionExpression.st</string>
 		<string>Expressions/PKRangeExpression.st</string>
 		<string>Expressions/PKUppercaseExpression.st</string>
+		<string>Expressions/PKSequenceExpression.st</string>
 		<string>Expressions/PKTokenExpression.st</string>
 		<string>Expressions/PKWhitespaceExpression.st</string>
 		<string>Generator/PKParserAbstractGenerator.st</string>
@@ -57,6 +68,7 @@
 		<string>PKNAryAlternateExpression</string>
 		<string>PKNArySequenceExpression</string>
 		<string>PKNonTerminalExpression</string>
+		<string>PKNonTerminalLookupExpression</string>
 		<string>PKNegateExpression</string>
 		<string>PKNumericExpression</string>
 		<string>PKParameterizedExpression</string>
