@@ -25,10 +25,15 @@ ${FRAMEWORK_NAME}_HEADER_FILES += PKParser.h\
 ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
 ST_FILES = ParserKit.st\
 	Utils.st\
+	PKParseAction.st\
+	PKParseRestriction.st\
+	PKRestrictedMatch.st\
+	PKParsePredicate.st\
 	PKDelayActionArray.st\
 	PKDelayInvocation.st\
 	PKInputStream.st\
 	PKEnvironmentStack.st\
+	PKMatchRangeNotice.st\
 	Expressions/PKActionExpression.st\
 	Expressions/PKParseExpression.st\
 	Expressions/PKDotExpression.st\
