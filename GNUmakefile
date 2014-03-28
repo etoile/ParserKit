@@ -26,6 +26,8 @@ ${FRAMEWORK_NAME}_SMALLTALK_BUNDLES += ParserKit.bundle
 ST_FILES = ParserKit.st\
 	Utils.st\
 	PKParseAction.st\
+	PKParseFail.st\
+	PKRules.st\
 	PKParseMatch.st\
 	PKParseRestriction.st\
 	PKRestrictedMatch.st\

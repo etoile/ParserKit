@@ -28,41 +28,6 @@
 
 ============================================================================
 "
-NSObject subclass: PKParseFail [
-	| input failedPosition describ delegate cause |
-
-	initWithInput: list description: string cause: theCause [
-		super init.
-		describ := string.
-		input := list.
-		cause := theCause.
-		failedPosition := input position.
-		^self
-	]
-	initWithInput: list description: string [
-		^self initWithInput: list description: string cause: nil
-	]
-
-	cause [
-		^(cause == nil) ifTrue: [ self ]
-		                ifFalse: [ cause cause ]
-	]  
-
-	setDelegate: anObject  [ delegate := anObject]
-	stopPosition [^failedPosition]
-	isFailure [ ^true ]
-	isSuccess [ ^false ]
-	matchAction [^nil]
-	matchText [^'PKParseFail']
-	bind: name ["No sensible thing can be done here"]
-	description [
-		| desc |
-		 desc := 'PKMatchFailure  ( At: ''',   failedPosition description, ''', ', input stream, ') ', describ, '\n'.
-		(nil == cause) ifFalse: [desc := desc, 'Cause: ', self cause description, '\n'].
-		^desc. 
-	]
-]
-
 "
 ============================================================================
   
@@ -70,79 +35,6 @@ NSObject subclass: PKParseFail [
   
 ============================================================================
 "
-
-
-"
-  PKRules encapsulates the rules set up by a single grammar.
-"
-NSObject subclass: PKRules [
-	| parent rules name |
-
-	initWithName: string [
-		super init.
-		name := string.
-		parent := nil.
-		rules := NSMutableDictionary new.
-		^self
-	]
-
-	at: rule [
-		^self lookup: rule ifFailed: [
-			| ruleExp |
-			ruleExp := PKNonTerminalExpression alloc initWithName: rule exp: nil.
-			rules setValue: ruleExp forKey: rule.
-			ruleExp
-		]
-	]
-
-	addRule: name expression: exp [
-		| rule |
-		rule := rules objectForKey: name.
-		rule == nil ifTrue: [
-			rule := PKNonTerminalExpression alloc initWithName: name exp: exp.
-		    rules setValue: rule forKey: name
-		] ifFalse: [
-			rule setExpression: exp
-		].
-		^rule
-	]
-
-	lookup: rule ifFailed: aBlock [
-		| return |
-		return := rules objectForKey: rule.
-		return == nil ifTrue:[
-			parent == nil
-                ifTrue: [ return := aBlock value ]
-				ifFalse: [	
-					return := parent lookup: rule ifFailed: aBlock
-				]
-		].
-		^return	
-	]
-		
-	initWithParent: pkRules name: string [
-		self initWithName: string.
-		parent := pkRules
-	]
-
-	name [ ^name ]
-
-	description [
-		| desc |
-		desc := name.
-		parent == nil ifFalse: [ desc := desc, ' : ', parent name ].
-		desc := desc, ' {\n'.
-		rules allKeys do: [:key | 
-			desc := desc, key, ' <- ', (rules objectForKey: key) expression description, '\n'
-		].
-		^desc, '}'	
-	]
-		
-	subgrammar: string [
-		^self class alloc initWithParent: self name: string
-	]
-]
-
 
 NSObject subclass: PKParser [
 	| +rulesRepo input rules delegate |
@@ -452,25 +344,6 @@ NSObject subclass: PKParser [
 Delegate and utilities to parse oMeta grammars
 ============================================================================
 "
-
-"
-  Expression generator, presently only used for alternative expressions.
-"
-NSObject subclass: PKAstExpressionGen [
-	| expression operation |
-
-	initWithExp: exp operation: op [
-		expression := exp.
-		operation := op
-	]
-
-	reduce: exp [
-		exp == nil 
-            ifFalse: [ expression ]
-			ifTrue: [ operation value: exp value: expression ]
-	]
-]
-
 
 "
   The purpose of the delayed expression builder is to defer generating

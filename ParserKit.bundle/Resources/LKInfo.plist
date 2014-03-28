@@ -5,6 +5,8 @@
 	<key>Sources</key>
 	<array>
 		<string>PKParseMatch.st</string>
+		<string>PKParseFail.st</string>
+		<string>PKRules.st</string>
 		<string>Expressions/PKAlphabeticExpression.st</string>
 		<string>Expressions/PKAnythingExpression.st</string>
 		<string>Expressions/PKComposeExpression.st</string>
